@@ -83,7 +83,7 @@ export async function completeJob(
     logger.error(e);
     throw e;
   } finally {
-    await cleanupWorkItemsForJobID(job.jobID, logger);
+    void cleanupWorkItemsForJobID(job.jobID, logger);
   }
 }
 
