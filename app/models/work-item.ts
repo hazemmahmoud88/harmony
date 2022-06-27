@@ -210,22 +210,22 @@ export async function updateWorkItemStatuses(
 
 /**
  * Update the status of work items by job ID.
- * @param tx - the transaction to use for the update
  * @param jobID - the jobID associated with the work items
  * @param oldStatuses - restricts the updates to work items where the status is in oldStatuses
  * @param newStatus - the value of the updated status
  */
 export async function updateWorkItemStatusesByJobId(
-  tx: Transaction,
   jobID: string,
   oldStatuses: WorkItemStatus[],
   newStatus: WorkItemStatus,
 ): Promise<void> {
+  logger.info('updateWorkItemStatusesByJobId starting');
   const updatedAt = new Date();
-  await tx(WorkItem.table)
+  await db(WorkItem.table)
     .where({ jobID })
     .whereIn('status', oldStatuses)
     .update({ status: newStatus, updatedAt });
+  logger.info('updateWorkItemStatusesByJobId complete');
 }
 
 /**
@@ -469,15 +469,13 @@ export async function workItemCountByServiceIDAndStatus(
 /**
  * Get the scroll-id for a job if it has one
  *
- * @param tx - the transaction to use for querying
  * @param jobID - the JobID
  * @returns A promise containing a scroll-id or null if the job does not use query-cmr
  */
 export async function getScrollIdForJob(
-  tx: Transaction,
   jobID: string,
 ): Promise<string> {
-  const workItems = await getWorkItemsByJobIdAndStepIndex(tx, jobID, QUERY_CMR_STEP_INDEX);
+  const workItems = await getWorkItemsByJobIdAndStepIndex(db, jobID, QUERY_CMR_STEP_INDEX);
   if (workItems && workItems.workItems[0]?.serviceID.match(/query-cmr/)) {
     return workItems.workItems[0]?.scrollID;
   }

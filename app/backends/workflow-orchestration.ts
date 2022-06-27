@@ -423,5 +423,7 @@ export async function updateWorkItem(req: HarmonyRequest, res: Response): Promis
       }
     }
   });
-  res.status(204).send();
+  if (!res.headersSent) {
+    res.status(204).send();
+  }
 }

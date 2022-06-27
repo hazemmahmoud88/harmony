@@ -3,7 +3,8 @@ import { promises as fs } from 'fs';
 import db, { Transaction } from './db';
 import { Job, JobStatus, terminalStates } from '../models/job';
 import env from './env';
-import { getScrollIdForJob, updateWorkItemStatusesByJobId } from '../models/work-item';
+import { getScrollIdForJob } from '../models/work-item';
+import { updateWorkItemStatusesByJobId } from '../models/work-item-status-update-worker';
 import { ConflictError, NotFoundError, RequestValidationError } from './errors';
 import isUUID from './uuid';
 import { clearScrollSession } from './cmr';
@@ -29,18 +30,17 @@ async function cleanupWorkItemsForJobID(jobID: string, logger: Logger): Promise<
 /**
  * Helper function to pull back the provided job ID (optionally by username).
  *
- * @param tx - the transaction use to perform the queries
  * @param jobID - the id of job (requestId in the db)
  * @param username - the name of the user requesting the pause - null if the admin
  * @throws {@link NotFoundError} if the job does not exist or the job does not
  * belong to the user.
  */
-async function lookupJob(tx: Transaction, jobID: string, username: string): Promise<Job>  {
+async function lookupJob(jobID: string, username: string): Promise<Job> {
   let job;
   if (username) {
-    ({ job } = await Job.byUsernameAndRequestId(tx, username, jobID));
+    ({ job } = await Job.byUsernameAndRequestId(db, username, jobID));
   } else {
-    ({ job } = await Job.byRequestId(tx, jobID));
+    ({ job } = await Job.byRequestId(db, jobID));
   }
 
   if (!job) {
@@ -53,6 +53,9 @@ async function lookupJob(tx: Transaction, jobID: string, username: string): Prom
  * Set and save the final status of the job
  * and in the case of job failure or cancellation, its work items.
  * (Also clean up temporary work items.)
+ * Work items are canceled asynchronously if the job is failed or canceled and the resulting
+ * promise is returned to all the caller to wait for all the work items to be updated.
+ * Work item cancelation happens outside of the transaction.
  * @param tx - the transaction to perform the updates with
  * @param job - the job to save and update
  * @param finalStatus - the job's final status
@@ -67,16 +70,21 @@ export async function completeJob(
   logger: Logger,
   message = '',
 ): Promise<void> {
+  let resultPromise: Promise<void>;
   try {
+    logger.info('Updating job status and saving');
+    job.updateStatus(finalStatus, message);
+    await job.save(tx);
+    logger.info('Job saved');
     if (!terminalStates.includes(finalStatus)) {
       throw new ConflictError(`Job cannot complete with status of ${finalStatus}.`);
     }
-    job.updateStatus(finalStatus, message);
-    await job.save(tx);
     if ([JobStatus.FAILED, JobStatus.CANCELED].includes(finalStatus)) {
-      await updateWorkItemStatusesByJobId(
-        tx, job.jobID, [WorkItemStatus.READY, WorkItemStatus.RUNNING], WorkItemStatus.CANCELED,
+      logger.info('Canceling work items');
+      void updateWorkItemStatusesByJobId(
+        job.jobID, [WorkItemStatus.READY, WorkItemStatus.RUNNING], WorkItemStatus.CANCELED,
       );
+      logger.info('Work items canceled');
     }
   } catch (e) {
     logger.error(`Error encountered for job ${job.jobID} while attempting to set final status`);
@@ -85,6 +93,7 @@ export async function completeJob(
   } finally {
     void cleanupWorkItemsForJobID(job.jobID, logger);
   }
+  return resultPromise;
 }
 
 /**
@@ -103,12 +112,12 @@ export async function cancelAndSaveJob(
   username?: string,
   _token?: string,
 ): Promise<void> {
+  // attempt to clear the CMR scroll session if this job had one
+  const scrollId = await getScrollIdForJob(jobID);
+  await clearScrollSession(scrollId);
+  const message = username ? 'Canceled by user.' : 'Canceled by admin.';
+  const job = await lookupJob(jobID, username);
   await db.transaction(async (tx) => {
-    const job = await lookupJob(tx, jobID, username);
-    // attempt to clear the CMR scroll session if this job had one
-    const scrollId = await getScrollIdForJob(tx, job.jobID);
-    await clearScrollSession(scrollId);
-    const message = username ? 'Canceled by user.' : 'Canceled by admin.';
     await completeJob(tx, job, JobStatus.CANCELED, logger, message);
   });
 }
@@ -140,9 +149,9 @@ export async function pauseAndSaveJob(
   username?: string,
   _token?: string,
 ): Promise<void> {
+  const job = await lookupJob(jobID, username);
+  job.pause();
   await db.transaction(async (tx) => {
-    const job = await lookupJob(tx, jobID, username);
-    job.pause();
     await job.save(tx);
   });
 }
@@ -167,8 +176,8 @@ export async function resumeAndSaveJob(
 ): Promise<void> {
   const encrypter = createEncrypter(env.sharedSecretKey);
   const decrypter = createDecrypter(env.sharedSecretKey);
+  const job = await lookupJob(jobID, username);
   await db.transaction(async (tx) => {
-    const job = await lookupJob(tx, jobID, username);
     if (username && token) {
       // update access token
       const workflowSteps = await getWorkflowStepsByJobId(tx, jobID);
@@ -204,8 +213,8 @@ export async function skipPreviewAndSaveJob(
 ): Promise<void> {
   const encrypter = createEncrypter(env.sharedSecretKey);
   const decrypter = createDecrypter(env.sharedSecretKey);
+  const job = await lookupJob(jobID, username);
   await db.transaction(async (tx) => {
-    const job = await lookupJob(tx, jobID, username);
     if (username && token) {
       // update access token
       const workflowSteps = await getWorkflowStepsByJobId(tx, jobID);
