@@ -91,8 +91,11 @@ export async function completeJob(
     logger.error(e);
     throw e;
   } finally {
+    logger.info('Cleaning up work artifacts');
     void cleanupWorkItemsForJobID(job.jobID, logger);
+    logger.info('Done cleaning up work artifacts');
   }
+  logger.info('Done completing job');
   return resultPromise;
 }
 
@@ -120,6 +123,7 @@ export async function cancelAndSaveJob(
   await db.transaction(async (tx) => {
     await completeJob(tx, job, JobStatus.CANCELED, logger, message);
   });
+  logger.info('cancelAdnSaveJob completed job');
 }
 
 /**
