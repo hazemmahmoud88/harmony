@@ -455,7 +455,6 @@ https://cmr.uat.earthdata.nasa.gov:
           STAGING_PATH: public/harmony/sample-service
     collections:
       - id: C1234088182-EEDTEST
-    maximum_sync_granules: 0
     capabilities:
       subsetting:
         bbox: true
