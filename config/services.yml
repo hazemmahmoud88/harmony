@@ -444,6 +444,29 @@ https://cmr.earthdata.nasa.gov:
       - image: !Env ${HARMONY_GDAL_ADAPTER_IMAGE}
 
 https://cmr.uat.earthdata.nasa.gov:
+  - name: harmony/sample-service
+    data_operation_version: '0.17.0'
+    type:
+      <<: *default-turbo-config
+      params:
+        <<: *default-turbo-params
+        env:
+          <<: *default-turbo-env
+          STAGING_PATH: public/harmony/sample-service
+    collections:
+      - id: C1234088182-EEDTEST
+    maximum_sync_granules: 0
+    capabilities:
+      subsetting:
+        bbox: true
+        variable: true
+        shape: true
+      output_formats:
+        - application/netcdf
+        - application/netcdf4
+    steps:
+      - image: !Env ${QUERY_CMR_IMAGE}
+      - image: !Env ${HARMONY_SAMPLE_SERVICE_IMAGE}
 
   - name: gesdisc/giovanni
     data_operation_version: '0.17.0'

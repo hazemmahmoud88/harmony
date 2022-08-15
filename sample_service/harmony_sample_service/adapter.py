@@ -6,16 +6,15 @@ adapter.py
 Service adapter for processing granules
 """
 from os import environ
-from os.path import join as path_join
 from shutil import rmtree
 from tempfile import mkdtemp
 
 from harmony import BaseHarmonyAdapter
-from harmony.util import generate_output_filename, HarmonyException
+from harmony.util import HarmonyException
 
-from .convert import make_localstack_s3fs, make_s3fs, mosaic_to_zarr
+from .convert import make_localstack_s3fs, make_s3fs
 from .download_utilities import download_granules
-from .stac_utilities import get_netcdf_urls, get_output_catalog
+from .stac_utilities import get_netcdf_urls
 
 
 NETCDF_MEDIA_TYPES = ['application/x-netcdf', 'application/x-netcdf4']
@@ -53,26 +52,11 @@ class SampleServiceAdapter(BaseHarmonyAdapter):
 
     def invoke(self):
         """ Downloads, processes, then re-uploads granules. The
-            `invoke` class method also validates the request by ensuring that
-            the requested output format is netcdf, and a STAC catalog is provided
-            to the service.
+            `invoke` class method also validates the request.
 
         """
-        if (
-            not self.message.format
-            or not self.message.format.mime
-            or self.message.format.mime not in NETCDF_MEDIA_TYPES
-        ):
-            self.logger.error('The sample service cannot convert to '
-                              f'{self.message.format}, skipping')
-            raise SampleException('Request failed due to an incorrect service '
-                                'workflow')
-        elif not self.catalog:
-            raise SampleException('Invoking Sample-Service without STAC catalog '
-                                'is not supported.')
-        else:
-            self.message.format.process('mime')
-            return (self.message, self.process_items_many_to_one())
+        self.message.format.process('mime')
+        return (self.message, self.process_items_many_to_one())
 
     def process_items_many_to_one(self):
         """ Performs some operation on an input STAC Item's data, returning an output
@@ -92,27 +76,16 @@ class SampleServiceAdapter(BaseHarmonyAdapter):
                                                  self.message.accessToken,
                                                  self.config, self.logger)
 
-            if len(local_file_paths) == 1:
-                # TODO is this correct?
-                output_name = generate_output_filename(netcdf_urls[0],
-                                                       ext='.nc')
-            else:
-                # Mimicking PO.DAAC Concise: for many-to-one the file name is
-                # "<collection>_merged.nc".
-                collection = self._get_item_source(items[0]).collection
-                output_name = f'{collection}_merged.nc'
+            self.logger.info('INPUT FILES:')
+            for file_path in local_file_paths:
+                self.logger.info(file_path)
 
             # TODO change this to do something simple s
-            zarr_root = path_join(self.message.stagingLocation, output_name)
-            zarr_store = self.s3.get_mapper(root=zarr_root, check=False,
-                                            create=True)
-
-            mosaic_to_zarr(local_file_paths, zarr_store)
-
-            return get_output_catalog(self.catalog, zarr_root)
+        
+            return self.catalog
         except Exception as service_exception:
             self.logger.error(service_exception, exc_info=1)
-            raise SampleException('Could not create NetCDF output: '
+            raise SampleException('Could not create output: '
                                 f'{str(service_exception)}') from service_exception
         finally:
             rmtree(workdir)
