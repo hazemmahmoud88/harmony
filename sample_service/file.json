@@ -1,0 +1,318 @@
+{
+  "links": [
+    {
+      "title": "OGC coverages API root for GPM_3IMERGHH v06",
+      "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0",
+      "rel": "root",
+      "type": "application/json"
+    },
+    {
+      "title": "Collections listing for GPM_3IMERGHH v06",
+      "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections",
+      "rel": "self",
+      "type": "application/json"
+    }
+  ],
+  "collections": [
+    {
+      "id": "C1225808238-GES_DISC/V1245551685-GES_DISC",
+      "title": "/Grid/HQobservationTime GPM_3IMERGHH v06",
+      "description": "Microwave satellite observation time GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/HQobservationTime",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FHQobservationTime/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551687-GES_DISC",
+      "title": "/Grid/HQprecipitation GPM_3IMERGHH v06",
+      "description": "High Quality precipitation from all available passive microwave sources GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/HQprecipitation",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FHQprecipitation/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551689-GES_DISC",
+      "title": "/Grid/HQprecipSource GPM_3IMERGHH v06",
+      "description": "Microwave satellite source identifier GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/HQprecipSource",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FHQprecipSource/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551691-GES_DISC",
+      "title": "/Grid/IRkalmanFilterWeight GPM_3IMERGHH v06",
+      "description": "IR-data weights in MW Kalman smoothing GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/IRkalmanFilterWeight",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FIRkalmanFilterWeight/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551693-GES_DISC",
+      "title": "/Grid/IRprecipitation GPM_3IMERGHH v06",
+      "description": "Precipitation (IR-only) from all available geo-satellites, passive-microwave-calibrated GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/IRprecipitation",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FIRprecipitation/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551709-GES_DISC",
+      "title": "/Grid/precipitationCal GPM_3IMERGHH v06",
+      "description": "Precipitation (combined microwave-IR) estimate with post-processing gauge calibration GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/precipitationCal",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FprecipitationCal/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551711-GES_DISC",
+      "title": "/Grid/precipitationQualityIndex GPM_3IMERGHH v06",
+      "description": "Quality Index of precipitationCal GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/precipitationQualityIndex",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FprecipitationQualityIndex/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551713-GES_DISC",
+      "title": "/Grid/precipitationUncal GPM_3IMERGHH v06",
+      "description": "Precipitation (combined microwave-IR) estimate before the post-processing gauge calibration GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/precipitationUncal",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FprecipitationUncal/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551715-GES_DISC",
+      "title": "/Grid/probabilityLiquidPrecipitation GPM_3IMERGHH v06",
+      "description": "Probability of liquid precipitation phase GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/probabilityLiquidPrecipitation",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FprobabilityLiquidPrecipitation/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    },
+    {
+      "id": "C1225808238-GES_DISC/V1245551717-GES_DISC",
+      "title": "/Grid/randomError GPM_3IMERGHH v06",
+      "description": "Random error for precipitationCal GPM_3IMERGHH v06 (NASA/GSFC/SED/ESD/GCDC/GESDISC)",
+      "links": [
+        {
+          "title": "Perform rangeset request for /Grid/randomError",
+          "href": "https://harmony.uat.earthdata.nasa.gov/C1225808238-GES_DISC/ogc-api-coverages/1.0.0/collections/%2FGrid%2FrandomError/coverage/rangeset"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            -90,
+            -180,
+            90,
+            180
+          ],
+          "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        },
+        "temporal": {
+          "interval": [
+            "2000-06-01T00:00:00.000Z",
+            "2021-09-30T23:59:59.000Z"
+          ],
+          "trs": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+        }
+      },
+      "itemType": "Variable"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+test_image="harmonyservices/sample-service-tests"
+tag=${1:-latest}
+
+# We use the `host` network mode so we can have access to the
+# host VPN connection used for Nexus access.
+docker build --network host --build-arg TAG=$tag -f tests/Dockerfile -t ${test_image}:${tag} .
