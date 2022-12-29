@@ -65,6 +65,20 @@ export function token({
 }
 
 /**
+ * Returns the serialized cookie value (without the name=).
+ * @param data  - The data to serialize
+ * @param secret - The secret to use for signing the cookie
+ * @returns The value of the cookie
+ */
+function signedCookieValue(data: string | object, secret: string): string {
+  // Serialize prefixed with 'j:' so express recognizes it as a JSON object when deserializing
+  const serialized = `j:${JSON.stringify(data)}`;
+  // Sign and then prefix with 's:' so express recognizes it as a signed cookie when deserializing
+  const signed = `s:${sign(serialized, secret)}`;
+  return signed;
+}
+
+/**
  * Given a cookie name, cookie data, and a signing secret, returns a cookie header string
  * that assigns the named cookie to a JSON-serialized, signed representation of the data
  *
@@ -74,11 +88,75 @@ export function token({
  * @returns The serialized, signed cookie header
  */
 function signedCookie(name: string, data: string | object, secret: string): string {
-  // Serialize prefixed with 'j:' so express recognizes it as a JSON object when deserializing
-  const serialized = `j:${JSON.stringify(data)}`;
-  // Sign and then prefix with 's:' so express recognizes it as a signed cookie when deserializing
-  const signed = `s:${sign(serialized, secret)}`;
+  const signed = signedCookieValue(data, secret);
   return serialize(name, signed);
+}
+
+/**
+ * Get the token cookie value (without the name=).
+ * @param expired - Is the token expired
+ * @param username - The user for the token
+ * @param secret - The cookie secret
+ * @returns The token cookie value
+ */
+export function getTokenCookieValue(expired: boolean, username: string, secret: string): string {
+  const expiresIn = 3600;
+  const expiresDelta = expired ? -expiresIn : expiresIn;
+  const cookieData = token({
+    username,
+    expiresDelta,
+  });
+
+  return signedCookieValue(cookieData, secret);
+}
+
+/**
+ * Get the serialized token cookie.
+ * @param expired - Is the token expired
+ * @param username - The user for the token
+ * @param secret - The cookie secret
+ * @returns The serialized token cookie
+ */
+function getTokenCookie(expired: boolean, username: string, secret: string): string {
+  const signed = getTokenCookieValue(expired, username, secret);
+  return serialize('token', signed);
+}
+
+/**
+ * Get a cookie string suitable for testing.
+ * @param expired - Is the token expired
+ * @param username - The user for the token
+ * @param secret - The cookie secret
+ * @param extraCookies - Any extra cookies to set
+ * @returns The cookie string
+ */
+function getCookies(expired: boolean, username: string, secret: string, extraCookies: object): string {
+  let cookieStr = getTokenCookie(expired, username, secret);
+  if (extraCookies) {
+    Object.keys(extraCookies).forEach((key) => {
+      const value = extraCookies[key];
+      const newCookie = signedCookie(key, value, secret);
+      cookieStr = `${cookieStr};${newCookie}`;
+    });
+  }
+  return cookieStr;
+}
+
+/**
+ * Allows us to bypass EDL token validation.
+ */
+export function stubTokenValidationCall(): void {
+  let fakePost = (axios.post as SinonStub);
+  if (!fakePost.restore) {
+    fakePost = stub(axios, 'post');
+  }
+  fakePost.resetHistory();
+  fakePost.withArgs(
+    match(/\/oauth\/tokens\/user\?token=/),
+    null,
+    match.object,
+  ).returns(null);
+  fakePost.callThrough();
 }
 
 /**
@@ -93,34 +171,9 @@ export function auth({
   expired = false,
   extraCookies = null,
 }): Plugin {
-  const expiresIn = 3600;
-  const expiresDelta = expired ? -expiresIn : expiresIn;
-  const cookieData = token({
-    username,
-    expiresDelta,
-  });
-
-  let cookieStr = signedCookie('token', cookieData, secret);
-  if (extraCookies) {
-    Object.keys(extraCookies).forEach((key) => {
-      const value = extraCookies[key];
-      const newCookie = signedCookie(key, value, secret);
-      cookieStr = `${cookieStr};${newCookie}`;
-    });
-  }
-
+  const cookieStr = getCookies(expired, username, secret, extraCookies);
   // Stub the call to validate the token
-  let fakePost = (axios.post as SinonStub);
-  if (!fakePost.restore) {
-    fakePost = stub(axios, 'post');
-  }
-  fakePost.resetHistory();
-  fakePost.withArgs(
-    match(/\/oauth\/tokens\/user\?token=/),
-    null,
-    match.object,
-  ).returns(null);
-  fakePost.callThrough();
+  stubTokenValidationCall();
 
   return (request): SuperAgentRequest => request.set('Cookie', cookieStr);
 }

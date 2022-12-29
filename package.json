@@ -17,7 +17,8 @@
     "build": "docker build -t harmonyservices/harmony:${VERSION:-latest} .",
     "build-notebooks-image": "docker build --platform linux/amd64 -t harmonyservices/notebooks:${VERSION:-latest} -f Dockerfile-notebooks .",
     "run-notebooks-image": "source .env && docker run -i -t --platform linux/amd64 --init -p 8888:8888 --env NB_EDL_USERNAME=\"${NB_EDL_USERNAME}\" --env NB_EDL_PASSWORD=\"${NB_EDL_PASSWORD}\" harmonyservices/notebooks:${VERSION:-latest}",
-    "publish": "docker push harmonyservices/harmony:${VERSION:-latest}"
+    "publish": "docker push harmonyservices/harmony:${VERSION:-latest}",
+    "open-cypress": "strict-npm-engines && ts-node-dev --no-notify -r tsconfig-paths/register cypress/helpers/server.ts"
   },
   "keywords": [
     "NASA",
@@ -53,7 +54,6 @@
   "author": "NASA EOSDIS Harmony team",
   "license": "Apache-2.0",
   "dependencies": {
-    "@types/ws": "^6.0.1",
     "@kubernetes/client-node": "^0.17.1",
     "@mapbox/geojson-rewind": "^0.5.0",
     "@tmcw/togeojson": "^4.2.0",
@@ -70,6 +70,7 @@
     "@types/simple-oauth2": "^2.5.5",
     "@types/tmp": "^0.2.3",
     "@types/uuid": "^8.3.1",
+    "@types/ws": "^6.0.1",
     "@types/xmldom": "^0.1.31",
     "ajv": "^8.8.0",
     "ajv-formats": "^2.1.1",
@@ -150,6 +151,7 @@
     "cookie-signature": "^1.1.0",
     "copyfiles": "^2.3.0",
     "csv-parse": "^5.0.4",
+    "cypress": "^12.2.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^15.0.0",
