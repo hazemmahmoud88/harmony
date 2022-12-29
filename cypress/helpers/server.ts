@@ -3,6 +3,10 @@ import * as harmony from '../../app/server';
 process.env.NODE_ENV = 'test';
 import './env';
 import { stubTokenValidationCall } from '../../test/helpers/auth';
+import { cmrApiConfig } from '../../app/util/cmr';
+
+// Ensures in tests that the Authorization header is not passed to CMR
+cmrApiConfig.useToken = false;
 
 // Stub the call to validate the token
 stubTokenValidationCall();

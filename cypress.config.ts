@@ -7,6 +7,7 @@ export default defineConfig({
       // implement node event listeners here
     },
     env: {
+      'COOKIE_SECRET': 'cookie-secret'
     },
     video: false,
   },
