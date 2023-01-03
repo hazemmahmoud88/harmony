@@ -1,16 +1,16 @@
 import request, { Test } from 'supertest';
 import { it } from 'mocha';
 import { expect } from 'chai';
-import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
 import _ from 'lodash';
 import JobLink from '../../app/models/job-link';
-import { Job, JobStatus, JobRecord, jobRecordFields, JobForDisplay, getRelatedLinks } from '../../app/models/job';
+import { Job, JobRecord, jobRecordFields, JobForDisplay, getRelatedLinks } from '../../app/models/job';
 import { JobListing } from '../../app/frontends/jobs';
 import db, { Transaction } from '../../app/util/db';
 import { hookRequest } from './hooks';
 import { truncateAll } from './db';
 import { RecordConstructor } from '../../app/models/record';
+import { buildJob } from '../common/jobs';
 
 export const adminUsername = 'adam';
 
@@ -21,17 +21,7 @@ export const expectedJobKeys = [
 
 export const expectedNoOpJobKeys = expectedJobKeys.filter((k) => k !== 'jobID');
 
-const exampleProps = {
-  username: 'anonymous',
-  status: JobStatus.RUNNING,
-  message: 'it is running',
-  progress: 42,
-  links: [{ href: 'http://example.com' }],
-  request: 'http://example.com/harmony?foo=bar',
-  numInputGranules: 100,
-  isAsync: true,
-  ignoreErrors: false,
-} as JobRecord;
+export { buildJob };
 
 /**
  * Create a JobRecord from an array of data
@@ -49,35 +39,6 @@ export function makePartialJobRecord(data): Partial<JobRecord> {
     numInputGranules: 1,
     collectionIds: [],
   };
-}
-
-/**
- * Creates a job with default values for fields that are not passed in
- *
- * @param fields - fields to use for the job record
- * @returns a job
- */
-export function buildJob(fields: Partial<JobRecord> = {}): Job {
-  const requestId = uuid().toString();
-  const job = new Job({ requestId, jobID: requestId, ...exampleProps, ...fields });
-  // Make sure the jobID and the requestId always match
-  job.jobID = job.requestId;
-
-  const jobLinks = job.links;
-  if (jobLinks) {
-    for (const jobLink of jobLinks) {
-      jobLink.jobID = requestId;
-      if (jobLink.temporal) {
-        if (jobLink.temporal.start && typeof jobLink.temporal.start === 'string') {
-          jobLink.temporal.start = new Date(jobLink.temporal.start);
-        }
-        if (jobLink.temporal.end && typeof jobLink.temporal.end === 'string') {
-          jobLink.temporal.end = new Date(jobLink.temporal.end);
-        }
-      }
-    }
-  }
-  return job;
 }
 
 /**

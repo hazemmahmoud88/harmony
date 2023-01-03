@@ -1,9 +1,10 @@
-import * as harmony from '../../app/server';
-
 process.env.NODE_ENV = 'test';
+
+import * as harmony from '../../app/server';
 import './env';
 import { stubTokenValidationCall } from '../../test/helpers/auth';
 import { cmrApiConfig } from '../../app/util/cmr';
+import { recreateDatabase } from '../../test/common/db';
 
 // Ensures in tests that the Authorization header is not passed to CMR
 cmrApiConfig.useToken = false;
@@ -11,7 +12,10 @@ cmrApiConfig.useToken = false;
 // Stub the call to validate the token
 stubTokenValidationCall();
 
-function start() {
+async function start() {
+
+  await recreateDatabase();
+
   harmony.start({
     EXAMPLE_SERVICES: 'true',
     skipEarthdataLogin: 'false',

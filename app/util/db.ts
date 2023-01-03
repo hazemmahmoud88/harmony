@@ -28,4 +28,15 @@ try {
   }
 }
 
+/**
+ * Restart knex and return the db object. Used in testing.
+ */
+export async function refreshDatabase(): Promise<Knex> {
+  if (module.exports.default) {
+    await module.exports.default.destroy();
+  }
+  module.exports.default = knex(config);
+  return module.exports.default;
+}
+
 export default database;

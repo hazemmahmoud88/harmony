@@ -2,33 +2,11 @@
 
 import { before, after, beforeEach, afterEach } from 'mocha';
 import { stub } from 'sinon';
+import { recreateDatabase, truncateAll, tables } from '../common/db';
 
-import util from 'util';
 import db from '../../app/util/db';
 
-export const tables = ['jobs', 'work_items', 'workflow_steps', 'job_links'];
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const exec = util.promisify(require('child_process').exec);
-
-/**
- * Truncates all database tables
- *
- * @returns A promise that resolves to nothing on completion
- */
-export async function truncateAll(): Promise<void> {
-  await Promise.all(tables.map((t) => db(t).truncate()));
-}
-
-const createDatabaseCommand = './bin/create-database -o test';
-
-/**
- * Recreates the test database
- * Note this is done because database migrations do not work for sqlite
- */
-async function recreateDatabase(): Promise<void> {
-  return exec(createDatabaseCommand);
-}
+export { truncateAll, tables };
 
 before(async function () {
   await recreateDatabase();
