@@ -34,6 +34,24 @@ const exampleProps = {
 } as JobRecord;
 
 /**
+ * Create a JobRecord from an array of data
+ * @param data - The array of data containing the JobRecord elements
+ * @returns a partial record containing the supplied elements
+ */
+export function makePartialJobRecord(data): Partial<JobRecord> {
+  return {
+    jobID: data[0],
+    username: data[1],
+    status: data[2],
+    isAsync: data[3],
+    createdAt: data[4],
+    updatedAt: data[4],
+    numInputGranules: 1,
+    collectionIds: [],
+  };
+}
+
+/**
  * Creates a job with default values for fields that are not passed in
  *
  * @param fields - fields to use for the job record
@@ -60,24 +78,6 @@ export function buildJob(fields: Partial<JobRecord> = {}): Job {
     }
   }
   return job;
-}
-
-/**
- * Create a JobRecord from an array of data
- * @param data - The array of data containing the JobRecord elements
- * @returns a partial record containing the supplied elements
- */
-export function makePartialJobRecord(data): Partial<JobRecord> {
-  return {
-    jobID: data[0],
-    username: data[1],
-    status: data[2],
-    isAsync: data[3],
-    createdAt: data[4],
-    updatedAt: data[4],
-    numInputGranules: 1,
-    collectionIds: [],
-  };
 }
 
 /**
