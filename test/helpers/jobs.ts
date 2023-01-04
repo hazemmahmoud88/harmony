@@ -1,17 +1,25 @@
 import request, { Test } from 'supertest';
 import { it } from 'mocha';
 import { expect } from 'chai';
+import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
 import _ from 'lodash';
 import JobLink from '../../app/models/job-link';
-import { Job, JobRecord, jobRecordFields, JobForDisplay, getRelatedLinks, JobStatus } from '../../app/models/job';
+import { Job, JobStatus, JobRecord, jobRecordFields, JobForDisplay, getRelatedLinks } from '../../app/models/job';
 import { JobListing } from '../../app/frontends/jobs';
 import db, { Transaction } from '../../app/util/db';
 import { hookRequest } from './hooks';
 import { truncateAll } from './db';
 import { RecordConstructor } from '../../app/models/record';
-import { v4 as uuid } from 'uuid';
 
+export const adminUsername = 'adam';
+
+export const expectedJobKeys = [
+  'username', 'status', 'message', 'progress', 'createdAt', 'updatedAt', 'dataExpiration',
+  'links', 'request', 'numInputGranules', 'jobID',
+];
+
+export const expectedNoOpJobKeys = expectedJobKeys.filter((k) => k !== 'jobID');
 
 const exampleProps = {
   username: 'anonymous',
@@ -24,15 +32,6 @@ const exampleProps = {
   isAsync: true,
   ignoreErrors: false,
 } as JobRecord;
-
-export const adminUsername = 'adam';
-
-export const expectedJobKeys = [
-  'username', 'status', 'message', 'progress', 'createdAt', 'updatedAt', 'dataExpiration',
-  'links', 'request', 'numInputGranules', 'jobID',
-];
-
-export const expectedNoOpJobKeys = expectedJobKeys.filter((k) => k !== 'jobID');
 
 /**
  * Creates a job with default values for fields that are not passed in

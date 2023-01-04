@@ -2,8 +2,9 @@
 
 import { before, after, beforeEach, afterEach } from 'mocha';
 import { stub } from 'sinon';
-import db from '../../app/util/db';
+
 import util from 'util';
+import db from '../../app/util/db';
 
 export const tables = ['jobs', 'work_items', 'workflow_steps', 'job_links'];
 
