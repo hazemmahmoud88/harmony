@@ -7,8 +7,22 @@ import { stub, SinonStub } from 'sinon';
 import { hookMockS3 } from './object-store';
 import * as cmr from '../../app/util/cmr';
 import { cmrApiConfig } from '../../app/util/cmr';
+import { use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import env from '../../app/util/env';
 
 // All hooks below are loaded in .mocharc.yml before each test file is executed
+
+// env hooks
+
+use(chaiAsPromised);
+
+before(() => {
+  stub(env, 'maxGranuleLimit').get(() => 2100);
+  stub(env, 'harmonyClientId').get(() => 'harmony-test');
+  stub(env, 'syncRequestPollIntervalMs').get(() => 0);
+  stub(env, 'sharedSecretKey').get(() => Buffer.from('_THIS_IS_MY_32_CHARS_SECRET_KEY_', 'utf8'));
+});
 
 
 //  DB hooks

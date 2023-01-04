@@ -1,10 +1,8 @@
-process.env.NODE_ENV = 'test';
-
+import '../../test/helpers/env';
 import * as harmony from '../../app/server';
-import './env';
 import { stubTokenValidationCall } from '../../test/helpers/auth';
 import { cmrApiConfig } from '../../app/util/cmr';
-import { recreateDatabase } from '../../test/common/db';
+import { recreateDatabase } from '../../test/helpers/db';
 
 // Ensures in tests that the Authorization header is not passed to CMR
 cmrApiConfig.useToken = false;

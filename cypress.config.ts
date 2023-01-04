@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test';
+import '../../test/helpers/env';
 import { defineConfig } from "cypress";
 import { JobStatus } from "./app/models/job";
 import { refreshDatabase } from './app/util/db';
@@ -35,7 +35,7 @@ export default defineConfig({
       });
     },
     env: {
-      'COOKIE_SECRET': 'cookie-secret'
+      'COOKIE_SECRET': 'foo'
     },
     video: false,
   },

@@ -1,8 +1,3 @@
-import { before } from 'mocha';
-import { stub } from 'sinon';
-import { use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-
 process.env.NODE_ENV = 'test';
 
 // We do not use an EDL application or call backend services in our tests.
@@ -27,12 +22,3 @@ import env from '../../app/util/env'; // Must set required env before loading th
 
 env.nodeEnv = 'test';
 process.setMaxListeners(Infinity);
-
-use(chaiAsPromised);
-
-before(() => {
-  stub(env, 'maxGranuleLimit').get(() => 2100);
-  stub(env, 'harmonyClientId').get(() => 'harmony-test');
-  stub(env, 'syncRequestPollIntervalMs').get(() => 0);
-  stub(env, 'sharedSecretKey').get(() => Buffer.from('_THIS_IS_MY_32_CHARS_SECRET_KEY_', 'utf8'));
-});
