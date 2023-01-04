@@ -10,6 +10,7 @@
     "start": "ts-node -r tsconfig-paths/register app/server.ts",
     "start-dev": "strict-npm-engines && ts-node-dev --no-notify -r tsconfig-paths/register --watch app/views,public/js --respawn app/server",
     "start-dev-fast": "TS_NODE_TRANSPILE_ONLY=true ts-node-dev --no-notify -r tsconfig-paths/register --respawn  --respawn --inspect=127.0.0.1:9229 app/server",
+    "start-dev-cypress": "strict-npm-engines && ts-node-dev --no-notify -r tsconfig-paths/register cypress/helpers/server.ts",
     "update-dev": "npm install && lerna run build && bin/restart-services",
     "copy-files": "copyfiles 'app/schemas/**/*' 'app/templates/**/*' 'app/frontends/templates/**/*' 'config/**/*' 'db/**/*' 'public/**/*' built",
     "watch-debug": "nodemon --inspect=5858 -e ts,tsx --exec node -r tsconfig-paths/register -r ts-node/register app/server.ts",
@@ -17,8 +18,7 @@
     "build": "docker build -t harmonyservices/harmony:${VERSION:-latest} .",
     "build-notebooks-image": "docker build --platform linux/amd64 -t harmonyservices/notebooks:${VERSION:-latest} -f Dockerfile-notebooks .",
     "run-notebooks-image": "source .env && docker run -i -t --platform linux/amd64 --init -p 8888:8888 --env NB_EDL_USERNAME=\"${NB_EDL_USERNAME}\" --env NB_EDL_PASSWORD=\"${NB_EDL_PASSWORD}\" harmonyservices/notebooks:${VERSION:-latest}",
-    "publish": "docker push harmonyservices/harmony:${VERSION:-latest}",
-    "open-cypress": "strict-npm-engines && ts-node-dev --no-notify -r tsconfig-paths/register cypress/helpers/server.ts"
+    "publish": "docker push harmonyservices/harmony:${VERSION:-latest}"
   },
   "keywords": [
     "NASA",

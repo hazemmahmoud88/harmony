@@ -3,8 +3,8 @@ import { defineConfig } from "cypress";
 import { JobStatus } from "./app/models/job";
 import { refreshDatabase } from './app/util/db';
 import db from './app/util/db';
-import { truncateAll } from './test/common/db';
-import { buildJob } from './test/common/jobs';
+import { truncateAll } from './test/helpers/db';
+import { buildJob } from './test/helpers/jobs';
 
 
 export default defineConfig({

@@ -1,8 +1,36 @@
+import { recreateDatabase } from './db';
+import { before } from 'mocha';
+import * as winston from 'winston';
+import logger from '../../app/util/log';
 import FormData from 'form-data';
-import { before, after } from 'mocha';
 import { stub, SinonStub } from 'sinon';
 import { hookMockS3 } from './object-store';
 import * as cmr from '../../app/util/cmr';
+import { cmrApiConfig } from '../../app/util/cmr';
+
+// All hooks below are loaded in .mocharc.yml before each test file is executed
+
+
+//  DB hooks
+
+before(async function () {
+  await recreateDatabase();
+});
+
+
+// logging hooks
+
+before(() => {
+  // Ensure logs go to a file so they don't muck with test output
+  const fileTransport = new winston.transports.File({ filename: 'logs/test.log' });
+  while (process.env.LOG_STDOUT !== 'true' && logger.transports.length > 0) {
+    logger.remove(logger.transports[0]);
+  }
+  logger.add(fileTransport);
+});
+
+
+// caching hooks
 
 hookMockS3();
 
@@ -62,4 +90,12 @@ after(function () {
   const prototype = FormData.prototype as any;
   const gcd = prototype._getContentDisposition;
   if (gcd.restore) gcd.restore();
+});
+
+
+// CMR
+
+// Ensures in tests that the Authorization header is not passed to CMR
+before(() => {
+  cmrApiConfig.useToken = false;
 });
