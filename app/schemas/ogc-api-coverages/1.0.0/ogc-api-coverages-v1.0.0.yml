@@ -330,7 +330,6 @@ paths:
       - $ref: '#/components/parameters/maxResults'
       - $ref: '#/components/parameters/skipPreview'
       - $ref: '#/components/parameters/ignoreErrors'
-      - $ref: '#/components/parameters/queryString'
       responses:
         "200":
           description: A coverage's range set.
@@ -367,7 +366,6 @@ paths:
       - $ref: '#/components/parameters/maxResults'
       - $ref: '#/components/parameters/skipPreview'
       - $ref: '#/components/parameters/ignoreErrors'
-      - $ref: '#/components/parameters/queryString'
       requestBody:
         content:
           multipart/form-data:
@@ -904,10 +902,3 @@ components:
       required: false
       schema:
         type: boolean
-    queryString:
-      name: queryString
-      in: query
-      description: provide CMR query paramaters that put constraints on which granules are returned
-      required: false
-      schema:
-        type: string
