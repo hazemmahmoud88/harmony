@@ -3,7 +3,7 @@ import HarmonyRequest from '../models/harmony-request';
 import { RequestValidationError } from '../util/errors';
 import { Conjunction, listToText } from '../util/string';
 import { keysToLowerCase } from '../util/object';
-import { coverageRangesetGetParams, coverageRangesetPostParams } from '../frontends/ogc-coverages/index';
+import { additionalCmrParams, coverageRangesetGetParams, coverageRangesetPostParams } from '../frontends/ogc-coverages/index';
 
 /**
  * Middleware to execute various parameter validations
@@ -64,6 +64,8 @@ export function validateParameterNames(requestedParams: string[], allowedParams:
 function validateCoverageRangesetParameterNames(req: HarmonyRequest): void {
   const requestedParams = Object.keys(req.query);
   const allowedParams = req.method.toLowerCase() == 'get' ? coverageRangesetGetParams : coverageRangesetPostParams;
+  // The below params are passed directly to the CMR granule query and are named as follows: cmr_{cmr api parameter name}.
+  allowedParams.push(...additionalCmrParams);
   validateParameterNames(requestedParams, allowedParams);
 }
 

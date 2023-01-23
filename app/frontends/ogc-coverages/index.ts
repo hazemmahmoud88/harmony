@@ -29,6 +29,8 @@ interface OgcSchemaCoverages {
   }
 }
 
+export const additionalCmrParams = ['cmr_native_id', 'cmr_options[native_id][pattern]'];
+
 const version = '1.0.0';
 const openApiRoot = path.join(__dirname, '..', '..', 'schemas', 'ogc-api-coverages', version);
 const openApiPath = path.join(openApiRoot, `ogc-api-coverages-v${version}.yml`);

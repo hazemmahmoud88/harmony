@@ -10,6 +10,7 @@ import { BoundingBox } from '../util/bounding-box';
 import env from '../util/env';
 import { defaultObjectStore } from '../util/object-store';
 import { CmrCollection, CmrGranule, CmrQuery, filterGranuleLinks, queryGranulesForCollection, queryGranulesWithSearchAfter } from '../util/cmr';
+import { additionalCmrParams } from 'app/frontends/ogc-coverages';
 
 /** Reasons why the number of processed granules might be limited to less than what the CMR
  * returns
@@ -173,6 +174,12 @@ async function cmrGranuleLocatorTurbo(
   }
 
   cmrQuery.concept_id = operation.granuleIds;
+
+  for (const cmrParam of additionalCmrParams) {
+    if (req.query?.[cmrParam]?.length) {
+      cmrQuery[cmrParam] = req.query[cmrParam] as string;
+    }
+  }
 
   operation.cmrHits = 0;
   operation.scrollIDs = [];
