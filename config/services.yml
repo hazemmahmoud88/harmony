@@ -119,6 +119,7 @@ https://cmr.earthdata.nasa.gov:
       - id: C1968979561-POCLOUD
       - id: C1968980609-POCLOUD
       - id: C1996881752-POCLOUD
+      - id: C2574931653-LARC_ASDC
     capabilities:
       subsetting:
         bbox: true
